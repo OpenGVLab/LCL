@@ -1,0 +1,37 @@
+{
+    "embed_dim": 512,
+    "vision_cfg": {
+        "image_size": 224,
+        "layers": 12,
+        "width": 768,
+        "patch_size": 32
+    },
+    "text_cfg": {
+        "context_length": 128,
+        "vocab_size": 49411,
+        "width": 512,
+        "heads": 8,
+        "layers": 12,
+        "tokenizer_kwargs": {
+            "additional_special_tokens": [
+                "<img_placehold>",
+                "<start_of_img>",
+                "<end_of_img>"
+            ]
+        }
+    },
+    "pool_project_cfg": {
+        "pool_proj_type": "attn",
+        "input_dim": 768,
+        "output_dim": 512,
+        "attn_num_heads": 8
+    },
+    "special_token_ids": {
+        "<start_of_text>": 49406,
+        "<end_of_text>": 49407,
+        "<img_placehold>": 49408,
+        "<start_of_img>": 49409,
+        "<end_of_img>": 49410
+    },
+    "custom_text": true
+}
