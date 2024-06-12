@@ -1,6 +1,6 @@
 # Latent Compression Learning (LCL)
 
-The official implementation of the paper "Vision Model Pre-training on Interleaved Image-Text Data via Latent Compression Learning".
+The official implementation of the paper "[Vision Model Pre-training on Interleaved Image-Text Data via Latent Compression Learning](https://arxiv.org/abs/2406.07543)".
 
 We introduce the Latent Compression Learning (LCL) to pre-train vision models from scratch with interleaved image-text data. Compared to existing methods (e.g., CLIP, auto-regressive text generation), our proposed LCL is the first to achieve both
 
@@ -72,6 +72,7 @@ If you find this work helpful in your research, please consider citing:
 @article{yang2024vision,
   title={Vision Model Pre-training on Interleaved Image-Text Data via Latent Compression Learning},
   author={Yang, Chenyu and Zhu, Xizhou and Zhu, Jinguo and Su, Weijie and Wang, Junjie and Dong, Xuan and Wang, Wenhai and Li, Bin and Zhou, Jie and Qiao, Yu and Dai, Jifeng},
+  journal={arXiv preprint arXiv:2406.07543},
   year={2024}
 }
 ```
