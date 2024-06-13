@@ -45,6 +45,14 @@ def _build_lm_head(text_output_dim, vocab_size, cast_dtype: Optional[torch.dtype
     return lm_head
 
 
+def _build_causal_mask(seq_length):
+        # pytorch uses additive attention mask; fill with -inf
+        mask = torch.empty(seq_length, seq_length)
+        mask.fill_(float("-inf"))
+        mask.triu_(1)  # zero out the lower diagonal
+        return mask
+
+
 class LCL(nn.Module):
     output_dict: torch.jit.Final[bool]
 
@@ -124,9 +132,14 @@ class LCL(nn.Module):
     
     def _forward_text(self, x: torch.Tensor):
         cast_dtype = self.text.transformer.get_cast_dtype()
-        x = x + self.text.positional_embedding.to(cast_dtype)
+        x = x + self.text.positional_embedding.to(cast_dtype)[:x.shape[1]]
+        # deal with variable seq length
+        if x.shape[1] != self.text.attn_mask.shape[0]:
+            attn_mask = _build_causal_mask(x.shape[1]).to(x.device)
+        else:
+            attn_mask = self.text.attn_mask
         x = x.permute(1, 0, 2)  # NLD -> LND
-        x = self.text.transformer(x, attn_mask=self.text.attn_mask)
+        x = self.text.transformer(x, attn_mask=attn_mask)
         x = x.permute(1, 0, 2)  # LND -> NLD
         return x
 
@@ -149,10 +162,16 @@ class LCL(nn.Module):
 
         return input_embs
 
-    def encode_text(self, text, normalize: bool = True):
+    def encode_text(self, text, normalize: bool = True, context_length=77):
+        # only for getting text feature for retrieval
         eot_mask = (text == self.eot_id)
         # NOTE: replace <eot> with <soi> since we use text features at <soi> for contrastive learning
         text[eot_mask] = self.soi_id
+        
+        # truncation
+        text = text[:, :context_length]
+        num_soi = torch.sum((text == self.soi_id), dim=-1)
+        text[:, -1][num_soi == 0] = self.soi_id # add <soi> if truncated
 
         cast_dtype = self.text.transformer.get_cast_dtype()
         x = self.text.token_embedding(text).to(cast_dtype)

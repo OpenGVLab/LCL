@@ -20,7 +20,8 @@ from torch.utils.data.distributed import DistributedSampler
 from webdataset.filters import _shuffle
 from webdataset.tariterators import base_plus_ext, url_opener, tar_file_expander, valid_sample
 
-from .interleaved import get_interleaved_wrapper
+from .interleaved import get_interleaved_wrapper, get_mmc4_interleaved_dataset
+from .distributed import GlobalDistributedSampler
 
 try:
     import horovod.torch as hvd
@@ -525,6 +526,37 @@ def get_synthetic_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None
     return DataInfo(dataloader, sampler)
 
 
+def get_mmc4_dataset(args, preprocess_fn, is_train, epoch=0, tokenizer=None):
+    data_root = args.train_data if is_train else args.val_data # e.g., ai2-jackh-mmc4-public
+    ann_path = os.path.join(data_root, 'data')
+    data_path = os.path.join(data_root, 'images')
+    dataset = get_mmc4_interleaved_dataset(args, ann_path, data_path, preprocess_fn, tokenizer)
+    num_samples = len(dataset)
+
+    if args.distributed and is_train:
+        if args.data_global_distributed:
+            sampler = GlobalDistributedSampler(dataset)
+        else:
+            sampler = DistributedSampler(dataset) 
+    else: 
+        sampler = None
+
+    shuffle = is_train and sampler is None
+
+    dataloader = DataLoader(
+        dataset,
+        batch_size=args.batch_size,
+        shuffle=shuffle,
+        num_workers=args.workers,
+        collate_fn=dataset.collate_fn,
+        pin_memory=True,
+        sampler=sampler,
+        drop_last=is_train,
+    )
+    dataloader.num_samples = num_samples
+    dataloader.num_batches = len(dataloader)
+
+
 def get_dataset_fn(data_path, dataset_type):
     if dataset_type == "webdataset":
         return get_wds_dataset
@@ -532,6 +564,8 @@ def get_dataset_fn(data_path, dataset_type):
         return get_csv_dataset
     elif dataset_type == "synthetic":
         return get_synthetic_dataset
+    elif dataset_type == "mmc4":
+        return get_mmc4_dataset
     elif dataset_type == "auto":
         ext = data_path.split('.')[-1]
         if ext in ['csv', 'tsv']:

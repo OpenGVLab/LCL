@@ -1,0 +1,24 @@
+torchrun --nproc_per_node $NPROC_PER_NODE  -m training.main \
+    --save-frequency 1 \
+    --zeroshot-frequency 1 \
+    --report-to tensorboard \
+    --train-data '/path/to/mmc4' \
+    --dataset-type mmc4 \
+    --imagenet-val '/path/to/ImageNet/val' \
+    --lr 3e-4 \
+    --warmup 2000 \
+    --batch-size $BATCH_SIZE \
+    --epochs 32 \
+    --workers 10 \
+    --model LCL_ViT-B-32_mmc4 \
+    --name LCL_ViT-B-32_mmc4 \
+    --seed 0 \
+    --grad-checkpointing \
+    --local-loss \
+    --gather-with-grad \
+    --interleaved-context-length 2048 \
+    --num-img-token 49 \
+    --img-first-prob 0.5 \
+    --data-global-distributed \
+    --lcl-generation-loss-weight 1.0 \
+    --lcl-contrastive-loss-weight 0.1 \

@@ -2,6 +2,7 @@ import os
 
 import torch
 import torch.distributed as dist
+from torch.utils.data.distributed import DistributedSampler
 
 try:
     import horovod.torch as hvd
@@ -135,3 +136,23 @@ def all_gather_object(args, obj, dst=0):
         objects = [None for _ in range(args.world_size)]
         dist.all_gather_object(objects, obj)
         return objects
+
+
+class GlobalDistributedSampler(DistributedSampler):
+    """
+    A modified class for global data distribution.
+    Ensure `index % world_size == rank`
+    """
+    def __iter__(self):
+        if self.shuffle:
+            # deterministically shuffle based on epoch
+            g = torch.Generator()
+            g.manual_seed(self.seed + self.epoch)
+            indices = torch.randperm(self.num_samples, generator=g).tolist()
+        else:
+            indices = torch.arange(self.num_samples).tolist()
+        
+        indices = [(i * self.num_replicas + self.rank) % len(self.dataset) for i in indices]
+        assert len(indices) == self.num_samples
+
+        return iter(indices)

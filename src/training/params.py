@@ -61,7 +61,7 @@ def parse_args(args):
     )
     parser.add_argument(
         "--dataset-type",
-        choices=["webdataset", "csv", "synthetic", "auto"],
+        choices=["webdataset", "csv", "synthetic", "mmc4", "auto"],
         default="auto",
         help="Which type of dataset to process."
     )
@@ -476,6 +476,12 @@ def parse_args(args):
         type=float,
         default=0.5,
         help="Probability of image inserted before corresponding text.",
+    )
+    parser.add_argument(
+        "--data-global-distributed",
+        default=False,
+        action="store_true",
+        help="Whether use global data distribution."
     )
     # For LCL loss
     parser.add_argument(

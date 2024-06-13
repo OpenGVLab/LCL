@@ -38,7 +38,19 @@ The example training scripts are provided in [`./scripts`](./scripts). You can r
 
 **Training on LAION-400M:** Run [`./scripts/lcl_vit_b_32_laion.sh`](./scripts/lcl_vit_b_32_laion.sh). The corresponding model config is [here](./src/open_clip/model_configs/LCL_ViT-B-32_laion.json).
 
-**Training on MMC4:** TODO, will be completed before 2024/6/15.
+**Training on MMC4:** We provide a simple dataloader that supports the original [MMC4](https://github.com/allenai/mmc4) dataset. Organize the data folder as follows:
+
+```
+  /path/to/mmc4/
+      ├── images/
+      │   └── ...
+      └── data/ 
+          ├── docs_shard_0_v2.jsonl.zip
+          ├── docs_shard_1_v2.jsonl.zip
+          └── ...
+```
+
+Run [`./scripts/lcl_vit_b_32_mmc4.sh`](./scripts/lcl_vit_b_32_mmc4.sh). The corresponding model config is [here](./src/open_clip/model_configs/LCL_ViT-B-32_mmc4.json).
 
 ## Pre-trained Checkpoints
 
