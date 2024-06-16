@@ -78,15 +78,6 @@ class LCL(nn.Module):
         text_width = self.text.width
         vocab_size = text_cfg['vocab_size'] if isinstance(text_cfg, dict) else text_cfg.vocab_size
         self.lm_head = _build_lm_head(text_width, vocab_size, cast_dtype)
-        # self.transformer = self.text.transformer
-        # self.context_length = text.context_length
-        # self.vocab_size = text.vocab_size
-        # self.token_embedding = text.token_embedding
-        # self.positional_embedding = text.positional_embedding
-        # self.ln_final = text.ln_final
-        # self.text_projection = text.text_projection
-        # self.text_pool_type = text.pool_type
-        # self.register_buffer('attn_mask', text.attn_mask, persistent=False)
 
         # special tokens ids
         self.pad_id = 0 # TODO: hack here, 0 is pad_id

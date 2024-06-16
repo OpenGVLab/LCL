@@ -58,9 +58,9 @@ The following are the checkpoints of our pre-trained vision encoders. (Some of t
 
 | model | data | epoch | download |
 | :---: | :---: | :---: | :---: |
-| ViT-B/32 | LAION-400M | 32 | eta: 2024/06/15 |
+| ViT-B/32 | LAION-400M | 32 | eta: 2024/06/30 |
 | ViT-B/32 | LAION-400M + MMC4 | 32 | TBD |
-| ViT-B/32 | LAION-2B + CC-Interleaved | 15 | eta: 2024/06/25 |
+| ViT-B/32 | LAION-2B + CC-Interleaved | 15 | eta: 2024/06/30 |
 | ViT-L/14 | LAION-400M | 32 | TBD |
 | ViT-L/14 | LAION-400M + MMC4 | 32 | TBD |
 | ViT-L/14 | LAION-2B + CC-Interleaved | 15 | TBD |
