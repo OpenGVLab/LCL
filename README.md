@@ -1,6 +1,9 @@
 # Latent Compression Learning (LCL)
 
-The official implementation of the paper "[Vision Model Pre-training on Interleaved Image-Text Data via Latent Compression Learning](https://arxiv.org/abs/2406.07543)".
+![Static Badge](https://img.shields.io/badge/NeurIPS-2024-red)
+[![Static Badge](https://img.shields.io/badge/arXiv-2406.07543-green)](https://arxiv.org/abs/2406.07543)
+
+**[NeurIPS 2024]** [**Vision Model Pre-training on Interleaved Image-Text Data via Latent Compression Learning**](https://arxiv.org/abs/2406.07543)
 
 We introduce the Latent Compression Learning (LCL) to pre-train vision models from scratch with interleaved image-text data. Compared to existing methods (e.g., CLIP, auto-regressive text generation), our proposed LCL is the first to achieve both
 
@@ -25,6 +28,11 @@ Our LCL pre-training significantly outperforms all other methods in the caption 
 
 When both using LAION-400M data, our LCL pre-training achieves similar performance to OpenCLIP. When combined with MMC4 data, our LCL pre-training outperforms OpenCLIP, especially in caption and multi-modal dialogue tasks. For a fair comparison, the total number of images seen during pre-training is 13B.
 
+## 📦 Pre-trained Checkpoints
+
+| model | data | # samples | download |
+| :---: | :---: | :---: | :---: |
+| ViT-B/16 | LAION-400M | 13B | [config](./src/open_clip/model_configs/LCL_ViT-B-16_laion.json) / [ckpt](https://huggingface.co/OpenGVLab/LCL-ViT-B-16-Laion) |
 
 ## 🛠️ Usage
 
@@ -32,13 +40,26 @@ When both using LAION-400M data, our LCL pre-training achieves similar performan
 
 This code is built upon [OpenCLIP](https://github.com/mlfoundations/open_clip), you can refer to their repository for setup.
 
-### Training LCL
+### Load Pre-trained Checkpoints
+
+Here is an example code to load pre-trained checkpoints:
+
+```python
+import open_clip
+
+model_name = "LCL_ViT-B-16_laion"
+pretrained = "path to the `.pt` file"
+
+model = open_clip.create_model(model_name, pretrained=pretrained)
+```
+
+### Train LCL
 
 The example training scripts are provided in [`./scripts`](./scripts). You can refer to [OpenCLIP](https://github.com/mlfoundations/open_clip?tab=readme-ov-file#training-clip) for more ways to launch training.
 
-**Training on LAION-400M:** Run [`./scripts/lcl_vit_b_32_laion.sh`](./scripts/lcl_vit_b_32_laion.sh). The corresponding model config is [here](./src/open_clip/model_configs/LCL_ViT-B-32_laion.json).
+**Training on LAION-400M.** Here is an example training script: [`./scripts/lcl_vit_b_32_laion.sh`](./scripts/lcl_vit_b_32_laion.sh). The corresponding model config is [here](./src/open_clip/model_configs/LCL_ViT-B-32_laion.json).
 
-**Training on MMC4:** We provide a simple dataloader that supports the original [MMC4](https://github.com/allenai/mmc4) dataset. Organize the data folder as follows:
+**Training on MMC4.** We provide a simple dataloader that supports the original [MMC4](https://github.com/allenai/mmc4) dataset. Organize the data folder as follows:
 
 ```
   /path/to/mmc4/
@@ -50,24 +71,11 @@ The example training scripts are provided in [`./scripts`](./scripts). You can r
           └── ...
 ```
 
-Run [`./scripts/lcl_vit_b_32_mmc4.sh`](./scripts/lcl_vit_b_32_mmc4.sh). The corresponding model config is [here](./src/open_clip/model_configs/LCL_ViT-B-32_mmc4.json).
+Here is an example training script: [`./scripts/lcl_vit_b_32_mmc4.sh`](./scripts/lcl_vit_b_32_mmc4.sh). The corresponding model config is [here](./src/open_clip/model_configs/LCL_ViT-B-32_mmc4.json).
 
-## Pre-trained Checkpoints
+More training scripts can be found under [`./scripts`](./scripts).
 
-The following are the checkpoints of our pre-trained vision encoders. (Some of the checkpoints will be available in the future based on the schedule)
-
-| model | data | epoch | download |
-| :---: | :---: | :---: | :---: |
-| ViT-B/32 | LAION-400M | 32 | eta: 2024/06/30 |
-| ViT-B/32 | LAION-400M + MMC4 | 32 | TBD |
-| ViT-B/32 | LAION-2B + CC-Interleaved | 15 | eta: 2024/06/30 |
-| ViT-L/14 | LAION-400M | 32 | TBD |
-| ViT-L/14 | LAION-400M + MMC4 | 32 | TBD |
-| ViT-L/14 | LAION-2B + CC-Interleaved | 15 | TBD |
-
-**CC-Interleaved is a newly collected interleaved image-text dataset with over one billion images, which will be released soon.**
-
-**NOTE:** We conduct large-scale pre-training with internal efficient code, which will not be released due to intellectual property reasons. This released version has been verified and can reproduce the results of ViT-B/32 on LAION-400M dataset.
+**NOTE:** We conduct large-scale pre-training with internal efficient code, which will not be released due to intellectual property reasons. This released version has been verified and can reproduce the results of ViT-B/16 on LAION-400M dataset.
 
 
 ## 📅 Schedule
